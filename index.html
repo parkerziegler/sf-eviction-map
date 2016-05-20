@@ -352,240 +352,244 @@
 
     <!-- Drop your code between the script tags below! -->
     <script>
-      window.onload = function () {
-        // Set the table name
+            window.onload = function () {
+              // Set the table name
 
-        var evictionTableName = "eviction_notices";
-        var nhoodsTableName = "neighborhoods";
+              var evictionTableName = "eviction_notices";
+              var nhoodsTableName = "neighborhoods";
 
-        // Put layer data into a JS object
+              // Put layer data into a JS object
 
-        var layerSource = {
-          user_name: "pziegler",
-          type: "cartodb",
-          sublayers: [
-            {
-              sql: "SELECT * FROM " + evictionTableName, // all eviction notices
-              cartocss: $("#simple").text(), // simple visualization
-            },
-            {
-              sql: "SELECT * FROM " + nhoodsTableName,
-              cartocss: $("#choropleth").text(),
-              interactivity: "cartodb_id",
-            },
-          ],
-        };
-
-        var torqueSource = {
-          type: "torque",
-          options: {
-            user_name: "pziegler", // replace with your user name
-            table_name: "eviction_notices",
-            cartocss: $("#torque").text(),
-          },
-        };
-
-        // Create legends for the different layers
-
-        // Choropleth legend
-
-        var choroLegend = new cdb.geo.ui.Legend({
-          type: "custom",
-          show_title: false,
-          title: "",
-          template: $("#choro_legend_template").html(),
-          visible: true,
-        });
-
-        // Heatmap legend
-
-        var heatLegend = new cdb.geo.ui.Legend({
-          type: "custom",
-          show_title: false,
-          title: "",
-          template: $("#heat_legend_template").html(),
-          visible: true,
-        });
-
-        // Stylize each legend as stacked to get everything to fit neatly
-        var choroStacked = new cdb.geo.ui.StackedLegend({
-          legends: [choroLegend],
-        });
-
-        var heatStacked = new cdb.geo.ui.StackedLegend({
-          legends: [heatLegend],
-        });
-
-        // Set the map options
-
-        var mapOptions = {
-          center: [37.7749, -122.4194],
-          zoom: 13,
-        };
-
-        // Instantiate map on specified DOM element
-        var map = new L.Map("map", mapOptions);
-
-        // Add a basemap to the map object just created
-        L.tileLayer(
-          "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
-          {
-            attribution:
-              '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
-            tileSize: 512,
-            maxZoom: 18,
-            zoomOffset: -1,
-            id: "mapbox/dark-v10",
-            accessToken:
-              "pk.eyJ1IjoicHppZWdsZXIiLCJhIjoiY2ltMHo3OGRxMDh0MXR5a3JrdHNqaGQ0bSJ9.KAFBMeyysBLz4Ty-ltXVQQ",
-          }
-        ).addTo(map);
-
-        // create the torque layer when a user clicks the timelapse button
-        $("#torqueviz").on("click", function () {
-          cartodb
-            .createLayer(map, torqueSource)
-            .addTo(map)
-            .done(function (layer) {
-              var torqueLayer = layer;
-              // pause animation at last frame
-              torqueLayer.on("change:time", function (changes) {
-                if (changes.step === torqueLayer.provider.getSteps() - 1) {
-                  torqueLayer.pause();
-                }
-              });
-              torqueLayer.on("load", function () {
-                torqueLayer.pause();
-              });
-              // when a user clicks on the other buttons, remove the torque layer
-              $("#choro").on("click", function () {
-                torqueLayer.remove();
-              });
-
-              $("#current").on("click", function () {
-                torqueLayer.remove();
-              });
-
-              $("#ellis").on("click", function () {
-                torqueLayer.remove();
-              });
-
-              $("#point").on("click", function () {
-                torqueLayer.remove();
-              });
-
-              $("#heat").on("click", function () {
-                torqueLayer.remove();
-              });
-            });
-        });
-
-        // create the static layers
-        cartodb
-          .createLayer(map, layerSource, { legends: true })
-          .addTo(map)
-          .done(function (layer) {
-            var sublayer0 = layer.getSubLayer(0);
-            var sublayer1 = layer.getSubLayer(1);
-            createSelector(sublayer0);
-            sublayer1.hide();
-
-            $("#choro").on("click", function () {
-              sublayer0.hide();
-              sublayer1.show();
-              cartodb.vis.Vis.addInfowindow(
-                map,
-                sublayer1,
-                [
-                  "nhood",
-                  "count",
-                  "price",
-                  "black",
-                  "asian",
-                  "latino",
-                  "white",
-                  "mixed",
+              var layerSource = {
+                user_name: "pziegler",
+                type: "cartodb",
+                sublayers: [
+                  {
+                    sql: "SELECT * FROM " + evictionTableName, // all eviction notices
+                    cartocss: $("#simple").text(), // simple visualization
+                  },
+                  {
+                    sql: "SELECT * FROM " + nhoodsTableName,
+                    cartocss: $("#choropleth").text(),
+                    interactivity: "cartodb_id",
+                  },
                 ],
+              };
+
+              var torqueSource = {
+                type: "torque",
+                options: {
+                  user_name: "pziegler", // replace with your user name
+                  table_name: "eviction_notices",
+                  cartocss: $("#torque").text(),
+                },
+              };
+
+              // Create legends for the different layers
+
+              // Choropleth legend
+
+              var choroLegend = new cdb.geo.ui.Legend({
+                type: "custom",
+                show_title: false,
+                title: "",
+                template: $("#choro_legend_template").html(),
+                visible: true,
+              });
+
+              // Heatmap legend
+
+              var heatLegend = new cdb.geo.ui.Legend({
+                type: "custom",
+                show_title: false,
+                title: "",
+                template: $("#heat_legend_template").html(),
+                visible: true,
+              });
+
+              // Stylize each legend as stacked to get everything to fit neatly
+              var choroStacked = new cdb.geo.ui.StackedLegend({
+                legends: [choroLegend],
+              });
+
+              var heatStacked = new cdb.geo.ui.StackedLegend({
+                legends: [heatLegend],
+              });
+
+              // Set the map options
+
+              var mapOptions = {
+                center: [37.7749, -122.4194],
+                zoom: 13,
+              };
+
+              // Instantiate map on specified DOM element
+              var map = new L.Map("map", mapOptions);
+
+              // Add a basemap to the map object just created
+              L.tileLayer(
+                "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
                 {
-                  infowindowTemplate: $("#infowindow_template").html(),
-                  templateType: "mustache",
+                  attribution:
+                    '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>',
+                  tileSize: 512,
+                  maxZoom: 18,
+                  zoomOffset: -1,
+                  id: "mapbox/dark-v10",
+                  accessToken:
+                    "pk.eyJ1IjoicHppZWdsZXIiLCJhIjoiY2ltMHo3OGRxMDh0MXR5a3JrdHNqaGQ0bSJ9.KAFBMeyysBLz4Ty-ltXVQQ",
                 }
-              );
-              heatStacked.hide();
-              $("#map").append(choroStacked.render().el);
-            });
+              ).addTo(map);
 
-            $("#point").on("click", function () {
-              sublayer0.show();
-              sublayer0.setSQL("SELECT * FROM eviction_notices");
-              sublayer1.hide();
-              choroStacked.hide();
-              heatStacked.hide();
-            });
+              // create the torque layer when a user clicks the timelapse button
+              $("#torqueviz").on("click", function () {
+                cartodb
+                  .createLayer(map, torqueSource)
+                  .addTo(map)
+                  .done(function (layer) {
+                    var torqueLayer = layer;
+                    // pause animation at last frame
+                    torqueLayer.on("change:time", function (changes) {
+                      if (changes.step === torqueLayer.provider.getSteps() - 1) {
+                        torqueLayer.pause();
+                      }
+                    });
+                    torqueLayer.on("load", function () {
+                      torqueLayer.pause();
+                    });
+                    // when a user clicks on the other buttons, remove the torque layer
+                    $("#choro").on("click", function () {
+                      torqueLayer.remove();
+                    });
 
-            $("#current").on("click", function () {
-              sublayer0.show();
-              sublayer0.setSQL(
-                "SELECT * FROM eviction_notices WHERE file_year = 2015"
-              );
-              sublayer1.hide();
-              choroStacked.hide();
-              heatStacked.hide();
-            });
+                    $("#current").on("click", function () {
+                      torqueLayer.remove();
+                    });
 
-            $("#ellis").on("click", function () {
-              sublayer0.show();
-              sublayer0.setSQL(
-                "SELECT * FROM eviction_notices WHERE ellis_act_withdrawal = true"
-              );
-              sublayer1.hide();
-              choroStacked.hide();
-              heatStacked.hide();
-            });
+                    $("#ellis").on("click", function () {
+                      torqueLayer.remove();
+                    });
 
-            $("#heat").on("click", function () {
-              sublayer0.show();
-              sublayer0.setSQL("SELECT * FROM eviction_notices");
-              sublayer1.hide();
-              choroStacked.hide();
-              $("#map").append(heatStacked.render().el);
-            });
+                    $("#point").on("click", function () {
+                      torqueLayer.remove();
+                    });
 
-            $("#torqueviz").on("click", function () {
-              sublayer0.hide();
-              sublayer1.hide();
-              choroStacked.hide();
-              heatStacked.hide();
-            });
-          })
-          .error(function (err) {
-            console.log("error: " + err);
-          });
+                    $("#heat").on("click", function () {
+                      torqueLayer.remove();
+                    });
+                  });
+              });
 
-        function createSelector(layer) {
-          var cartocss = "";
-          var $options = $(".layer_selector").find("li");
-          $options.click(function (e) {
-            var $li = $(e.target);
-            var selected = $li.attr("data");
+              // create the static layers
+              cartodb
+                .createLayer(map, layerSource, { legends: true })
+                .addTo(map)
+                .done(function (layer) {
+                  var sublayer0 = layer.getSubLayer(0);
+                  var sublayer1 = layer.getSubLayer(1);
+                  createSelector(sublayer0);
+                  sublayer1.hide();
 
-            $options.removeClass("cartocss_selected");
-            $li.addClass("cartocss_selected");
+                  $("#choro").on("click", function () {
+                    sublayer0.hide();
+                    sublayer1.show();
+                    cartodb.vis.Vis.addInfowindow(
+                      map,
+                      sublayer1,
+                      [
+                        "nhood",
+                        "count",
+                        "price",
+                        "black",
+                        "asian",
+                        "latino",
+                        "white",
+                        "mixed",
+                      ],
+                      {
+                        infowindowTemplate: $("#infowindow_template").html(),
+                        templateType: "mustache",
+                      }
+                    );
+                    heatStacked.hide();
+                    $("#map").append(choroStacked.render().el);
+                  });
 
-            cartocss = $("#" + selected).text();
+                  $("#point").on("click", function () {
+                    sublayer0.show();
+                    sublayer0.setSQL("SELECT * FROM eviction_notices");
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                  });
 
-            layer.setCartoCSS(cartocss);
-          });
-        }
-      };
+                  $("#current").on("click", function () {
+                    sublayer0.show();
+                    sublayer0.setSQL(
+                      "SELECT * FROM eviction_notices WHERE file_year = 2015"
+                    );
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                  });
 
-      // SQL to perform a spatial join on the data
+                  $("#ellis").on("click", function () {
+                    sublayer0.show();
+                    sublayer0.setSQL(
+                      "SELECT * FROM eviction_notices WHERE ellis_act_withdrawal = true"
+                    );
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                  });
 
-      /* SELECT analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood,
-        COUNT(*) as count
-        FROM analysis_neighborhoods, eviction_notices
-        WHERE ST_Intersects(eviction_notices.the_geom, analysis_neighborhoods.the_geom)
-        GROUP BY analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood */
+                  $("#heat").on("click", function () {
+                    sublayer0.show();
+                    sublayer0.setSQL("SELECT * FROM eviction_notices");
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    $("#map").append(heatStacked.render().el);
+                  });
+
+                  $("#torqueviz").on("click", function () {
+                    sublayer0.hide();
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                  });
+                })
+                .error(function (err) {
+                  console.log("error: " + err);
+                });
+
+              function createSelector(layer) {
+                var cartocss = "";
+                var $options = $(".layer_selector").find("li");
+                $options.click(function (e) {
+                  var $li = $(e.target);
+                  var selected = $li.attr("data");
+
+                  $options.removeClass("cartocss_selected");
+                  $li.addClass("cartocss_selected");
+
+                  cartocss = $("#" + selected).text();
+
+                  layer.setCartoCSS(cartocss);
+                });
+              }
+            };
+
+            // SQL to perform a spatial join on the data
+
+            /* SELECT analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood,
+              COUNT(*) as count
+              FROM analysis_neighborhoods, eviction_notices
+              WHERE ST_Intersects(eviction_notices.the_geom, analysis_neighborhoods.the_geom)
+              GROUP BY analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood */
+      <<<<<<< HEAD
+      =======
+
+      >>>>>>> Add map HTML to index.html
     </script>
   </body>
 </html>
