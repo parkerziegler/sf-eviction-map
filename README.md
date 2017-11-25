@@ -5,4 +5,4 @@ This map was produced as part of my senior research in Geography at Middlebury C
 
 A few cool features of this map:
 * Integration of Torque layers with static CartoDB layers using jQuery buttons. This does involve destroying and recreating the Torque layers on button clicks.
-* Custom legends and infowindows using Mustache templates. Check out Daniel McGlone's post on how to do this (here) [https://www.azavea.com/blog/2015/09/09/making-custom-infowindows-and-legends-in-cartodb-editor/].
+* Custom legends and infowindows using Mustache templates. Check out Daniel McGlone's post on how to do this (here)[https://www.azavea.com/blog/2015/09/09/making-custom-infowindows-and-legends-in-cartodb-editor/].
