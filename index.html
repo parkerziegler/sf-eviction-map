@@ -444,7 +444,7 @@
         // create the torque layer when a user clicks the timelapse button
         $("#torqueviz").on("click", function () {
           cartodb
-            .createLayer(map, torqueSource)
+            .createLayer(map, torqueSource, { https: true })
             .addTo(map)
             .done(function (layer) {
               var torqueLayer = layer;
@@ -482,7 +482,7 @@
 
         // create the static layers
         cartodb
-          .createLayer(map, layerSource, { legends: true })
+          .createLayer(map, layerSource, { legends: true, https: true })
           .addTo(map)
           .done(function (layer) {
             var sublayer0 = layer.getSubLayer(0);
