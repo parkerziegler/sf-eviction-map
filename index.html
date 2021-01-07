@@ -221,7 +221,7 @@
   <body>
     <div id="map"></div>
     <div id="title">
-      <h1>Eviction Notices in San Francisco, CA (1997 - 2015)</h1>
+      <h1>Eviction Notices in San Francisco, CA (1997-2015)</h1>
     </div>
     <div id="sidebar">
       <p>
@@ -582,10 +582,10 @@
       // SQL to perform a spatial join on the data
 
       /* SELECT analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood,
-              COUNT(*) as count
-              FROM analysis_neighborhoods, eviction_notices
-              WHERE ST_Intersects(eviction_notices.the_geom, analysis_neighborhoods.the_geom)
-              GROUP BY analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood */
+        COUNT(*) as count
+        FROM analysis_neighborhoods, eviction_notices
+        WHERE ST_Intersects(eviction_notices.the_geom, analysis_neighborhoods.the_geom)
+        GROUP BY analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood */
     </script>
   </body>
 </html>
